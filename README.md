@@ -12,7 +12,7 @@ Rules are written in Rego language from [Open Policy Agent](https://www.openpoli
 You can use [conftest](https://conftest.dev) in your CI/CD pipeline to analyze Dockerfiles:
 
 ```
-conftest test --policy dockerfile-security.policy Dockerfile
+conftest test --policy dockerfile-security.rego Dockerfile
 ```
 
 Example output:
