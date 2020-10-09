@@ -15,6 +15,16 @@ You can use [conftest](https://conftest.dev) in your CI/CD pipeline to analyze D
 conftest test --policy dockerfile-security.rego Dockerfile
 ```
 
+You can also use Docker:
+```
+docker run \
+    --rm \
+    -v "$(pwd):/project"
+    openpolicyagent/conftest
+        test \
+        --policy dockerfile-security.rego\
+        Dockerfile
+```
 Example output:
 
 ```
@@ -26,5 +36,6 @@ FAIL - Dockerfile - Line 8: Do not use 'sudo' command
 
 8 tests, 4 passed, 0 warnings, 4 failures, 0 exceptions
 ```
+
 
 
