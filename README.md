@@ -15,8 +15,8 @@ You can use [conftest](https://conftest.dev) in your CI/CD pipeline to analyze D
 conftest test --policy dockerfile-security.rego Dockerfile
 ```
 
-You can also use Docker:
-```
+You can also use [Docker](https://docs.docker.com/get-docker/) and [official OCI image](https://www.conftest.dev/install/#docker) for Open Policy Agent:
+```bash
 docker run \
     --rm \
     -v "$(pwd):/project"
