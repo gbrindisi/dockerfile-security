@@ -97,7 +97,7 @@ deny[msg] {
 default multi_stage = false
 multi_stage = true {
     input[i].Cmd == "copy"
-    val := concat(" ", input[i].Value)
+    val := concat(" ", input[i].Flags)
     contains(lower(val), "--from=")
 }
 deny[msg] {
