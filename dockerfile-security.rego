@@ -50,7 +50,7 @@ deny[msg] {
 warn[msg] {
     input[i].Cmd == "run"
     val := concat(" ", input[i].Value)
-    matches := regex.match(".*?[apk|yum|dnf|apt|pip].+?(install|[dist-|check-|group]?up[grade|date]).*", lower(val))
+    matches := regex.match(".*?(apk|yum|dnf|apt|pip).+?(install|[dist-|check-|group]?up[grade|date]).*", lower(val))
     matches == true
     msg = sprintf("Line: %d: Do not upgrade your system packages: %s", [i, val])
 }
