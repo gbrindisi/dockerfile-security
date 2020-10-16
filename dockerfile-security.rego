@@ -92,3 +92,15 @@ deny[msg] {
     contains(lower(val), "sudo")
     msg = sprintf("Line %d: Do not use 'sudo' command", [i])
 }
+
+# Use multi-stage builds
+default multi_stage = false
+multi_stage = true {
+    input[i].Cmd == "copy"
+    val := concat(" ", input[i].Value)
+    contains(lower(val), "--from=")
+}
+deny[msg] {
+    multi_stage == false
+    msg = sprintf("You COPY, but do not appear to use multi-stage builds...", [])
+}
