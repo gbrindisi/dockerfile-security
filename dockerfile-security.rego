@@ -47,17 +47,12 @@ deny[msg] {
 }
 
 # Do not upgrade your system packages
-upgrade_commands = [
-    "apk upgrade",
-    "apt-get upgrade",
-    "dist-upgrade",
-]
-
-deny[msg] {
+warn[msg] {
     input[i].Cmd == "run"
     val := concat(" ", input[i].Value)
-    contains(val, upgrade_commands[_])
-    msg = sprintf("Line: %d: Do not upgrade your system packages", [i])
+    matches := regex.match(".*?(apk|yum|dnf|apt|pip).+?(install|[dist-|check-|group]?up[grade|date]).*", lower(val))
+    matches == true
+    msg = sprintf("Line: %d: Do not upgrade your system packages: %s", [i, val])
 }
 
 # Do not use ADD if possible
@@ -97,4 +92,16 @@ deny[msg] {
     val := concat(" ", input[i].Value)
     contains(lower(val), "sudo")
     msg = sprintf("Line %d: Do not use 'sudo' command", [i])
+}
+
+# Use multi-stage builds
+default multi_stage = false
+multi_stage = true {
+    input[i].Cmd == "copy"
+    val := concat(" ", input[i].Flags)
+    contains(lower(val), "--from=")
+}
+deny[msg] {
+    multi_stage == false
+    msg = sprintf("You COPY, but do not appear to use multi-stage builds...", [])
 }
