@@ -14,12 +14,38 @@ secrets_env = [
     "tkn"
 ]
 
-deny[msg] {    
-    input[i].Cmd == "env"
-    val := input[i].Value
-    contains(lower(val[_]), secrets_env[_])
-    msg = sprintf("Line %d: Potential secret in ENV key found: %s", [i, val])
+deny[msg] {
+    dockerenvs := [val | input[i].Cmd == "env"; val := input[i].Value]
+    dockerenv := dockerenvs[_]
+    envvar := dockerenv[_]
+    lower(envvar) == secrets_env[_]
+    msg = sprintf("Line %d: Potential secret in ENV key found: %s", [i, envvar])
 }
+
+deny[msg] {
+    dockerenvs := [val | input[i].Cmd == "env"; val := input[i].Value]
+    dockerenv := dockerenvs[_]
+    envvar := dockerenv[_]
+    startswith(lower(envvar), secrets_env[_])
+    msg = sprintf("Line %d: Potential secret in ENV key found: %s", [i, envvar])
+}
+
+deny[msg] {
+    dockerenvs := [val | input[i].Cmd == "env"; val := input[i].Value]
+    dockerenv := dockerenvs[_]
+    envvar := dockerenv[_]
+    endswith(lower(envvar), secrets_env[_])
+    msg = sprintf("Line %d: Potential secret in ENV key found: %s", [i, envvar])
+}
+
+deny[msg] {
+    dockerenvs := [val | input[i].Cmd == "env"; val := input[i].Value]
+    dockerenv := dockerenvs[_]
+    envvar := dockerenv[_]
+    parts := regex.split("[ :=_-]", envvar)
+    part := parts[_]
+    lower(part) == secrets_env[_]
+    msg = sprintf("Line %d: Potential secret in ENV key found: %s", [i, envvar])
 
 # Only use trusted base images
 deny[msg] {
